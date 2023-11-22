@@ -1,6 +1,6 @@
 package org.example.bot;
 
-import org.example.dbconnection.StartPr;
+import org.example.dbconnection.InitializationFromDB;
 import org.example.entities.GameSessions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ public class Application {
         }
         log.info("Telegram bot is ready to accept updates from user......");
 
-        GameSessions.setGameSessions(StartPr.getGameSessionslist());
+        GameSessions.setGameSessions(InitializationFromDB.getGameSessionslist());
 
     }
 }

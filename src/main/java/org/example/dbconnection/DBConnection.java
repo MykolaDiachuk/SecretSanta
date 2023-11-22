@@ -124,7 +124,7 @@ public class DBConnection {
     }
 
     public static Integer getUserId(String userName, Long chatId) {
-       Integer userId = null;
+        Integer userId = null;
         String selectSQL = "SELECT idUser FROM Users WHERE userName = ? AND chatId = ?";
 
         try (Connection dbConnection = getDBConnection();
@@ -144,8 +144,9 @@ public class DBConnection {
 
         return userId;
     }
+
     public static String getNameOfRecipient(Integer idUser, Integer idgs) {
-        String  recipient = null;
+        String recipient = null;
         String selectSQL = "SELECT nameOfRecipient FROM Games WHERE idUser = ? AND  idGameSession = ?";
 
         try (Connection dbConnection = getDBConnection();
@@ -157,7 +158,7 @@ public class DBConnection {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-               recipient = resultSet.getString("nameOfRecipient");
+                recipient = resultSet.getString("nameOfRecipient");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -191,7 +192,7 @@ public class DBConnection {
     }
 
     public static Integer getUserId(String userName) {
-       Integer userId = null;
+        Integer userId = null;
         String selectSQL = "SELECT idUser FROM Users WHERE userName = ?";
 
         try (Connection dbConnection = getDBConnection();
@@ -293,42 +294,6 @@ public class DBConnection {
         return userExists;
     }
 
-    public static boolean doesGameExist(String nameOfSession) {
-        boolean gameExists = false;
-        String selectSQL = "SELECT COUNT(*) as count FROM GameSessions WHERE  nameGameSessions = ?";
-
-        try (Connection dbConnection = getDBConnection();
-             PreparedStatement preparedStatement = dbConnection.prepareStatement(selectSQL)) {
-
-            preparedStatement.setString(1, nameOfSession);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                int count = resultSet.getInt("count");
-                gameExists = (count > 0);
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-        return gameExists;
-    }
-
-    public static void deleteUser(Long id_of_user) {
-        String deleteSQL = "DELETE FROM Users WHERE idUser = ?";
-        try (Connection dbConnection = getDBConnection();
-             PreparedStatement preparedStatement = dbConnection.prepareStatement(deleteSQL)) {
-
-            preparedStatement.setLong(1, id_of_user);
-            preparedStatement.executeUpdate();
-            System.out.println("User with ID " + id_of_user + " is deleted from Users table!");
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
 
     public static void deleteFromGame(Integer idUser, Integer idGameSession) {
         String deleteSQL = "DELETE FROM Games WHERE idUser = ? AND idGameSession = ? ";
@@ -343,6 +308,7 @@ public class DBConnection {
             System.out.println(e.getMessage());
         }
     }
+
     public static void deleteGame(Integer idGameSession) {
         String deleteSQL = "DELETE FROM Games WHERE  idGameSession = ? ";
         try (Connection dbConnection = getDBConnection();
@@ -355,6 +321,7 @@ public class DBConnection {
             System.out.println(e.getMessage());
         }
     }
+
     public static void deleteGameSession(String nameGameSession) {
 
         Integer isGS = getGameSessionId(nameGameSession);
@@ -371,9 +338,9 @@ public class DBConnection {
         }
     }
 
-    public static void setResipient( List<User> newList, String nameGameSessions ){
+    public static void setResipient(List<User> newList, String nameGameSessions) {
         Integer isGS = getGameSessionId(nameGameSessions);
-        for (User user:newList) {
+        for (User user : newList) {
             Integer idUser = getUserId(user.getUserName(), user.getChatId());
 
             String deleteSQL = "UPDATE Games SET nameOfRecipient = ? " +
@@ -390,7 +357,6 @@ public class DBConnection {
                 System.out.println(e.getMessage());
             }
         }
-
 
 
     }

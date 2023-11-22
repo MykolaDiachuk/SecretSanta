@@ -1,21 +1,23 @@
 package org.example.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class GameSession {
-  private AllUsers users;
+  private List<User> users;
   private final User admin;
   private final String nameOfGameSession;
 
-    public GameSession(Admin admin, String nameOfSession) {
+    public GameSession(User admin, String nameOfSession) {
         this.admin = admin;
         this.nameOfGameSession = nameOfSession;
         if (users == null) {
-            users = new AllUsers();
+            users = new ArrayList<>();
         }
         GameSessions.add(this);
     }
-    public GameSession(User admin, String nameOfSession,AllUsers allUsers) {
+    public GameSession(User admin, String nameOfSession,List<User> allUsers) {
         this.admin = admin;
         this.nameOfGameSession = nameOfSession;
         this.users = allUsers;
@@ -24,7 +26,7 @@ public class GameSession {
         return this.nameOfGameSession;
     }
 
-    public AllUsers getAllUsers() {
+    public List<User> getAllUsers() {
         return users;
     }
 
@@ -32,7 +34,7 @@ public class GameSession {
         return admin;
     }
 
-    public void setUsers(AllUsers users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 

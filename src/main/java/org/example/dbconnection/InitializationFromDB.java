@@ -5,14 +5,14 @@ import org.example.entities.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StartPr {
+public class InitializationFromDB {
     public static List<GameSession> getGameSessionslist(){
         List<GameSession> result = new ArrayList<>();
         List<Integer> idGameSessions = DBConnection.getAllGSId();
 
         for (Integer idGS: idGameSessions) {
             GameSession gs = new GameSession( DBConnection.getUserById(DBConnection.getGameSessionAdmin(idGS)),
-                    DBConnection.getGameSessionName(idGS), new AllUsers(getUsersInGame(idGS)));
+                    DBConnection.getGameSessionName(idGS), getUsersInGame(idGS));
             result.add(gs);
         }
         return result;

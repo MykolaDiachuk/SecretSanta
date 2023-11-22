@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class GemaSessionRepository {
     public static String registerTheGame(String userName, Long chatId, String nameOfSession) {
-        Admin admin = new Admin(userName, chatId);
+        User admin = new User(userName, chatId);
         if (!DBConnection.doesUserExist(userName, chatId)) {
             DBConnection.insertUser(userName, chatId);
         }
@@ -18,7 +18,7 @@ public class GemaSessionRepository {
         GameSession gameSession = findGame(nameOfSession);
         if (gameSession == null) {
             gameSession = new GameSession(admin, nameOfSession);
-            gameSession.getAllUsers().addUsers(admin);
+            gameSession.getAllUsers().add(admin);
             DBConnection.insertGameSession(nameOfSession, DBConnection.getUserId(userName, chatId));
             DBConnection.insertIntoGame(DBConnection.getUserId(userName, chatId), DBConnection.getGameSessionId(nameOfSession));
             return "Гру створено! " + userName + " адмін гри.";
@@ -37,7 +37,7 @@ public class GemaSessionRepository {
                 return "Ви вже у грі";
             }
             DBConnection.insertIntoGame(DBConnection.getUserId(userName, chatId), DBConnection.getGameSessionId(nameOfSession));
-            gameSession.getAllUsers().addUsers(user);
+            gameSession.getAllUsers().add(user);
             return "Вас додано до гри";
         } else return "Такої гри не існує";
 
@@ -47,9 +47,9 @@ public class GemaSessionRepository {
         User user = new User(userName, chatId);
         GameSession gameSession = findGame(nameOfSession);
         if (gameSession != null) {
-            gameSession.getAllUsers().getUsers().remove(user);
-            DBConnection.deleteFromGame(DBConnection.getUserId(userName, chatId),DBConnection.getGameSessionId(nameOfSession));
-            if (gameSession.getAllUsers().getUsers().isEmpty()) {
+            gameSession.getAllUsers().remove(user);
+            DBConnection.deleteFromGame(DBConnection.getUserId(userName, chatId), DBConnection.getGameSessionId(nameOfSession));
+            if (gameSession.getAllUsers().isEmpty()) {
                 deleteGameSession(userName, chatId, nameOfSession);
 
             }
@@ -58,7 +58,7 @@ public class GemaSessionRepository {
     }
 
     public static boolean deleteGameSession(String userName, Long chatId, String nameOfSession) {
-        Admin admin = new Admin(userName, chatId);
+        User admin = new User(userName, chatId);
         GameSession gameSession = findGame(nameOfSession);
         if (gameSession != null) {
             if (gameSession.getAdmin().equals(admin)) {
@@ -72,20 +72,22 @@ public class GemaSessionRepository {
     public static List<User> listOfUsers(String nameOfSession) {
         GameSession gameSession = findGame(nameOfSession);
         if (gameSession != null) {
-            return gameSession.getAllUsers().getUsers();
+            return gameSession.getAllUsers();
         } else return null;
     }
 
     public static void deleteUser(String userNameToDelete, String nameOfSession) {
         GameSession gameSession = findGame(nameOfSession);
         if (gameSession != null) {
-            AllUsers allUsers = gameSession.getAllUsers();
-            List<User> updatedUsers = allUsers.getUsers().stream()
+            List<User> allUsers = gameSession.getAllUsers();
+            List<User> updatedUsers = allUsers.stream()
                     .filter(user -> !user.getUserName().equals(userNameToDelete))
                     .collect(Collectors.toList());
-            gameSession.getAllUsers().setUsers(updatedUsers);
+            gameSession.setUsers(updatedUsers);
 
-            DBConnection.deleteFromGame(DBConnection.getUserId(userNameToDelete),DBConnection.getGameSessionId(nameOfSession));
+            DBConnection.deleteFromGame(DBConnection.getUserId(userNameToDelete), DBConnection.getGameSessionId(nameOfSession));
+            if (gameSession.getAllUsers().isEmpty()) deleteGameSession(gameSession.getAdmin().getUserName(),
+                    gameSession.getAdmin().getChatId(), gameSession.getNameOfGameSession());
         }
     }
 
@@ -99,7 +101,7 @@ public class GemaSessionRepository {
     }
 
     public static boolean isInGame(Long chatId, GameSession gs) {
-        return gs.getAllUsers().getUsers().stream().anyMatch(user1 -> user1.chatId.equals(chatId));
+        return gs.getAllUsers().stream().anyMatch(user1 -> user1.getChatId().equals(chatId));
     }
 
     public static boolean isAdmin(String userName, Long chatId) {

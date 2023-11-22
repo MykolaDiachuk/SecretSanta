@@ -7,9 +7,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.Objects;
 
 public class User {
-    public String userName;
-    public Long chatId;
-    public String objectOfDonation;
+   private String userName;
+   private Long chatId;
+   private String objectOfDonation;
 
 public User(){}
     public User(String userName, Long chatId) {

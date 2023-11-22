@@ -1,6 +1,5 @@
 package org.example.resource;
 
-import org.example.entities.AllUsers;
 import org.example.entities.User;
 
 import java.util.*;

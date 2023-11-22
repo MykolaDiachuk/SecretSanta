@@ -1,7 +1,6 @@
 package org.example.bot;
 
 import org.example.dbconnection.DBConnection;
-import org.example.dbconnection.StartPr;
 import org.example.entities.*;
 import org.example.entities.GameSessions;
 import org.example.resource.GemaSessionRepository;
@@ -27,12 +26,12 @@ import java.util.stream.Collectors;
 public class Bot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
-        return "TestToLaugh_bot";
+        return "made_in_ChNU_bot";
     }
 
     @Override
     public String getBotToken() {
-        return "6587185093:AAGCl0VXDaOnzyojEIdXfqnTktRRUY3jtuo";
+        return "6923566467:AAEqLepzxmj4uRhDQ6a-CWY1pG87FxlZpjg";
     }
 
     Map<Long, UserOperationState> userOperationState = new ConcurrentHashMap<>();
@@ -62,7 +61,7 @@ public class Bot extends TelegramLongPollingBot {
             case "/start" -> {
 
                 dialogService.sendKeyboard(chatId, "Кнопка \"Створити гру\" створює нову гру у яку" +
-                        " можуть заходити учасники, \"Зайти у гру\" дозіоляє зайти у гру, потрібно знати її назву " +
+                        " можуть заходити учасники. \"Зайти у гру\" дозіоляє зайти у гру, потрібно знати її назву. " +
                         "\"Вийти з гри\" дозволяє вийти з гри, потрібно натиснути на назву гри", Keyboard.getMainMenu());
             }
             case "Створити гру" -> {
@@ -130,7 +129,7 @@ public class Bot extends TelegramLongPollingBot {
                 case GET_LIST_USERS -> {
                     userOperationState.remove(chatId);
                     String joinedNames = Objects.requireNonNull(GemaSessionRepository.listOfUsers(text)).stream()
-                            .map(user -> user.userName)
+                            .map(User::getUserName)
                             .collect(Collectors.joining("\n"));
                     joinedNames += "\nКідькість учасників: " + Objects.requireNonNull(GemaSessionRepository.listOfUsers(text)).size();
                     dialogService.sendMessage(chatId, joinedNames);
@@ -142,7 +141,7 @@ public class Bot extends TelegramLongPollingBot {
                     dialogService.sendKeyboard(chatId, "Вибери користувача, якого треба видалити",
                             Keyboard.userListKeyboard(GameSessions.get().stream()
                                     .filter(gameSession -> gameSession.getNameOfGameSession().equals(text))
-                                    .map(gameSession -> gameSession.getAllUsers().getUsers())
+                                    .map(GameSession::getAllUsers)
                                     .flatMap(Collection::stream)
                                     .collect(Collectors.toList())));
                 }
@@ -160,7 +159,7 @@ public class Bot extends TelegramLongPollingBot {
 
                         GameSessions.get().forEach(gs -> {
                             if (gs.getNameOfGameSession().equals(text)) {
-                                gs.setUsers(new AllUsers(newList));
+                                gs.setUsers(newList);
                             }
                         });
                         DBConnection.setResipient(newList,text);
