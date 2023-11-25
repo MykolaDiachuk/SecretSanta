@@ -1,6 +1,7 @@
 package org.example.dbconnection;
 
 import org.example.entities.User;
+import org.example.resource.DataBaseConfig;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,11 +13,11 @@ import java.util.List;
 
 public class DBConnection {
 
-    protected static String dbHost = "DESKTOP-O74CBO1";
-    protected static String dbPort = "1433";
-    protected static String dbUser = "niko";
-    protected static String dbPass = "asertan12";
-    protected static String dbName = "SecretSanta";
+    protected static String dbHost = DataBaseConfig.dbHost.getValue();
+    protected static String dbPort = DataBaseConfig.dbPort.getValue();
+    protected static String dbUser = DataBaseConfig.dbUser.getValue();
+    protected static String dbPass = DataBaseConfig.dbPass.getValue();
+    protected static String dbName = DataBaseConfig.dbName.getValue();
 
 
     public static Connection getDBConnection() {

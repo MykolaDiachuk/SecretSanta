@@ -108,7 +108,7 @@ public class Bot extends TelegramLongPollingBot {
             UserOperationState operationState = userOperationState.get(chatId);
             switch (operationState) {
                 case EXIT_GAME -> {
-                    userOperationState.remove(chatId);
+
                     GemaSessionRepository.exitTheGame(userName, chatId, text);
                     if (!GemaSessionRepository.isAdmin(userName, chatId)) {
                         dialogService.sendKeyboard(chatId, "Вас успішно видалено", Keyboard.getMainMenu());
@@ -117,7 +117,7 @@ public class Bot extends TelegramLongPollingBot {
                     }
                 }
                 case DELETE_GAME -> {
-                    userOperationState.remove(chatId);
+
                     if (GemaSessionRepository.deleteGameSession(userName, chatId, text)) {
                         if (!GemaSessionRepository.isAdmin(userName, chatId)) {
                             dialogService.sendKeyboard(chatId, "Гру видалено", Keyboard.getMainMenu());
@@ -127,7 +127,7 @@ public class Bot extends TelegramLongPollingBot {
                     }
                 }
                 case GET_LIST_USERS -> {
-                    userOperationState.remove(chatId);
+
                     String joinedNames = Objects.requireNonNull(GemaSessionRepository.listOfUsers(text)).stream()
                             .map(User::getUserName)
                             .collect(Collectors.joining("\n"));
@@ -135,7 +135,7 @@ public class Bot extends TelegramLongPollingBot {
                     dialogService.sendMessage(chatId, joinedNames);
                 }
                 case SELECT_USER -> {
-                    userOperationState.remove(chatId);
+
                     userOperationState.put(chatId, UserOperationState.DELETE_USER);
                     tempNameOfGameSession = text;
                     dialogService.sendKeyboard(chatId, "Вибери користувача, якого треба видалити",
@@ -146,7 +146,7 @@ public class Bot extends TelegramLongPollingBot {
                                     .collect(Collectors.toList())));
                 }
                 case DELETE_USER -> {
-                    userOperationState.remove(chatId);
+
                     GemaSessionRepository.deleteUser(text, tempNameOfGameSession);
                     dialogService.sendMessage(chatId, text + " видалено");
                     tempNameOfGameSession = null;
@@ -176,7 +176,6 @@ public class Bot extends TelegramLongPollingBot {
             dialogService.sendKeyboard(chatId, GemaSessionRepository.registerTheGame(userName, chatId, textFromUser),
                     Keyboard.getMainMenuForAdmin());
         } else if (userOperationState.get(chatId) == UserOperationState.ENTER_GAME) {
-            userOperationState.remove(chatId);
 
             dialogService.sendMessage(chatId, GemaSessionRepository.enterTheGame(userName, chatId, textFromUser));
             if(GemaSessionRepository.isAdmin(userName,chatId)) {
