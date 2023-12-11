@@ -8,7 +8,7 @@ public class ConfigReader {
     public static Properties loadConfig() {
         Properties prop = new Properties();
         try {
-            prop.load(new FileInputStream("C:\\Users\\PC\\IdeaProjects\\untitled2\\src\\main\\resources\\file.txt"));
+            prop.load(new FileInputStream("C:\\Users\\PC\\IdeaProjects\\SecretSanta\\src\\main\\resources\\file.txt"));
         } catch (IOException e) {
             e.printStackTrace();
         }

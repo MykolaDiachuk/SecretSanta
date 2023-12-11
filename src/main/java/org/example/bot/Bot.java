@@ -3,10 +3,7 @@ package org.example.bot;
 import org.example.dbconnection.DBConnection;
 import org.example.entities.*;
 import org.example.entities.GameSessions;
-import org.example.resource.GemaSessionRepository;
-import org.example.resource.Keyboard;
-import org.example.resource.PeopleCarousel;
-import org.example.resource.UserOperationState;
+import org.example.resource.*;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -26,12 +23,12 @@ import java.util.stream.Collectors;
 public class Bot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
-        return "made_in_ChNU_bot";
+        return ConfigReader.loadConfig().getProperty("BotUsername");
     }
 
     @Override
     public String getBotToken() {
-        return "6923566467:AAEqLepzxmj4uRhDQ6a-CWY1pG87FxlZpjg";
+        return ConfigReader.loadConfig().getProperty("BotToken");
     }
 
     Map<Long, UserOperationState> userOperationState = new ConcurrentHashMap<>();
@@ -152,19 +149,15 @@ public class Bot extends TelegramLongPollingBot {
                     tempNameOfGameSession = null;
                 }
                 case RUN_CAROUSEL -> {
-                    if (Objects.requireNonNull(GemaSessionRepository.listOfUsers(text)).size() % 2 != 0) {
-                        dialogService.sendMessage(chatId, "Непарна кількість гравців, не можна роздати імена");
-                    } else {
-                        List<User> newList = PeopleCarousel.runCarousel(Objects.requireNonNull(GemaSessionRepository.listOfUsers(text)));
+                    List<User> newList = PeopleCarousel.runCarousel(Objects.requireNonNull(GemaSessionRepository.listOfUsers(text)));
 
-                        GameSessions.get().forEach(gs -> {
-                            if (gs.getNameOfGameSession().equals(text)) {
-                                gs.setUsers(newList);
-                            }
-                        });
-                        DBConnection.setResipient(newList,text);
-                        dialogService.sendToAll(Objects.requireNonNull(GemaSessionRepository.listOfUsers(text)));
-                    }
+                    GameSessions.get().forEach(gs -> {
+                        if (gs.getNameOfGameSession().equals(text)) {
+                            gs.setUsers(newList);
+                        }
+                    });
+                     DBConnection.setResipient(newList,text);
+                    dialogService.sendToAll(Objects.requireNonNull(GemaSessionRepository.listOfUsers(text)));
                 }
             }
         }
@@ -177,9 +170,12 @@ public class Bot extends TelegramLongPollingBot {
                     Keyboard.getMainMenuForAdmin());
         } else if (userOperationState.get(chatId) == UserOperationState.ENTER_GAME) {
 
-            dialogService.sendMessage(chatId, GemaSessionRepository.enterTheGame(userName, chatId, textFromUser));
-            if(GemaSessionRepository.isAdmin(userName,chatId)) {
-                dialogService.sendKeyboard(chatId,"Ви адмін",Keyboard.getMainMenuForAdmin());
+            if (GemaSessionRepository.isAdmin(userName, chatId)) {
+                dialogService.sendKeyboard(chatId, GemaSessionRepository.enterTheGame(userName, chatId, textFromUser)
+                        , Keyboard.getMainMenuForAdmin());
+            } else {
+                dialogService.sendMessage(chatId, GemaSessionRepository.enterTheGame(userName, chatId, textFromUser));
+
             }
         }
     }
