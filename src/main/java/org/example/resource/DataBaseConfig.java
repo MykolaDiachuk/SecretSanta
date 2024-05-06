@@ -14,7 +14,8 @@ public enum DataBaseConfig {
     }
 
     public String getValue() {
-        return System.getenv(configKey);
+         return System.getenv(configKey);
+        //return ConfigReader.loadConfig().getProperty(configKey);
     }
 }
 
