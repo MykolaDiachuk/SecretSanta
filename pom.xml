@@ -14,13 +14,7 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <distributionManagement>
-        <repository>
-            <id>github-repo</id>
-            <name>SecretSanta</name>
-            <url>https://github.com/MykolaDiachuk/SecretSanta.git</url>
-        </repository>
-    </distributionManagement>
+
 
     <dependencies>
         <dependency>
@@ -85,7 +79,7 @@
                     <configuration>
                         <archive>
                             <manifest>
-                                <mainClass>fully.qualified.MainClass</mainClass>
+                                <mainClass>org.example.bot.Application</mainClass>
                             </manifest>
                         </archive>
                         <descriptorRefs>
@@ -153,6 +147,14 @@
             </plugins>
         </pluginManagement>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <name>Maven Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+
+        </repository>
+    </distributionManagement>
 
 
 </project>

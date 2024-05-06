@@ -28,7 +28,7 @@ public class DBConnection {
 
         Connection dbConnection = null;
         try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
             dbConnection = DriverManager.getConnection(connectionString);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
