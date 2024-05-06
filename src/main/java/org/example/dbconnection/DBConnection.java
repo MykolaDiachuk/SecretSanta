@@ -21,8 +21,11 @@ public class DBConnection {
 
 
     public static Connection getDBConnection() {
-        String connectionString = "jdbc:sqlserver://" + dbHost + ":" + dbPort + ";" +
-                "databaseName=" + dbName + ";user=" + dbUser + ";password=" + dbPass;
+
+        String connectionString = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName
+                + "?user=" + dbUser + "&password=" + dbPass;
+
+
         Connection dbConnection = null;
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -34,7 +37,7 @@ public class DBConnection {
     }
 
     public static void insertUser(String userName, Long chatId) {
-        String insertTableSQL = "INSERT INTO Users ([userName], [chatId]) VALUES (?, ?)";
+        String insertTableSQL = "INSERT INTO Users (userName, chatId) VALUES (?, ?)";
 
         try (Connection dbConnection = getDBConnection();
              PreparedStatement preparedStatement = dbConnection.prepareStatement(insertTableSQL)) {
@@ -53,7 +56,8 @@ public class DBConnection {
     }
 
     public static void insertGameSession(String nameOfSession, Integer adminId) {
-        String insertTableSQL = "INSERT INTO GameSessions ([nameGameSessions],[adminId]) VALUES (?,?)";
+        String insertTableSQL = "INSERT INTO GameSessions (nameGameSessions, adminId) VALUES (?, ?)";
+
 
         try (Connection dbConnection = getDBConnection();
              PreparedStatement preparedStatement = dbConnection.prepareStatement(insertTableSQL)) {
@@ -72,7 +76,7 @@ public class DBConnection {
     }
 
     public static void insertIntoGame(Integer userId, Integer gameSessionId) {
-        String insertTableSQL = "INSERT INTO Games ([idGameSession], [idUser]) VALUES (?,?)";
+        String insertTableSQL = "INSERT INTO Games (idGameSession, idUser) VALUES (?, ?)";
 
         try (Connection dbConnection = getDBConnection();
              PreparedStatement preparedStatement = dbConnection.prepareStatement(insertTableSQL)) {
@@ -344,10 +348,10 @@ public class DBConnection {
         for (User user : newList) {
             Integer idUser = getUserId(user.getUserName(), user.getChatId());
 
-            String deleteSQL = "UPDATE Games SET nameOfRecipient = ? " +
-                    "WHERE idGameSession = ? AND idUser = ?";
+            String updateSQL = "UPDATE Games SET nameOfRecipient = ? WHERE idGameSession = ? AND idUser = ?";
+
             try (Connection dbConnection = getDBConnection();
-                 PreparedStatement preparedStatement = dbConnection.prepareStatement(deleteSQL)) {
+                 PreparedStatement preparedStatement = dbConnection.prepareStatement(updateSQL)) {
 
                 preparedStatement.setString(1, user.getObjectOfDonation());
                 preparedStatement.setInt(2, isGS);

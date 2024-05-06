@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
 public class Bot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
-        return ConfigReader.loadConfig().getProperty("BotUsername");
+        return System.getenv("BotToken");
     }
 
     @Override
     public String getBotToken() {
-        return ConfigReader.loadConfig().getProperty("BotToken");
+        return System.getenv("BotUsername");
     }
 
     Map<Long, UserOperationState> userOperationState = new ConcurrentHashMap<>();
