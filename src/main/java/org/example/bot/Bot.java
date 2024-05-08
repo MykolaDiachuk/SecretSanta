@@ -24,7 +24,7 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         return System.getenv("BotUsername");
-       // return ConfigReader.loadConfig().getProperty("BotUsername");
+        //return ConfigReader.loadConfig().getProperty("BotUsername");
 
     }
 
