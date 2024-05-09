@@ -96,8 +96,7 @@ public class GemaSessionRepository {
                 return "Гравця " + userNameToDelete + " видалено";
 
 
-        }
-        return "Ви, " + userNameToDelete + ", адмін гри, вас не можна видалити";
+        }else return "Ви, " + userNameToDelete + ", адмін гри, вас не можна видалити";
     }
 
     public static GameSession findGame(String nameOfSession) {
