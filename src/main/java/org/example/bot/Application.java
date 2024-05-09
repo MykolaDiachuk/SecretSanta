@@ -33,6 +33,7 @@ public class Application {
         log.info("Telegram bot is ready to accept updates from user......");
 
         GameSessions.setGameSessions(InitializationFromDB.getGameSessionslist());
+        
         int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8888"));
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/", new MyHandler());

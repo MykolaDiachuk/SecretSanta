@@ -48,8 +48,13 @@ public class GemaSessionRepository {
         GameSession gameSession = findGame(nameOfSession);
         if (gameSession != null) {
             gameSession.getAllUsers().remove(user);
+            if(gameSession.getAdmin().equals(user)) {
+                DBConnection.deleteGameSession(nameOfSession);
+                deleteGameSession(userName, chatId, nameOfSession);
+            }
             DBConnection.deleteFromGame(DBConnection.getUserId(userName, chatId), DBConnection.getGameSessionId(nameOfSession));
             if (gameSession.getAllUsers().isEmpty()) {
+                DBConnection.deleteGameSession(nameOfSession);
                 deleteGameSession(userName, chatId, nameOfSession);
 
             }
@@ -76,19 +81,23 @@ public class GemaSessionRepository {
         } else return null;
     }
 
-    public static void deleteUser(String userNameToDelete, String nameOfSession) {
+    public static String deleteUser(String userNameToDelete, String nameOfSession) {
         GameSession gameSession = findGame(nameOfSession);
-        if (gameSession != null) {
-            List<User> allUsers = gameSession.getAllUsers();
-            List<User> updatedUsers = allUsers.stream()
-                    .filter(user -> !user.getUserName().equals(userNameToDelete))
-                    .collect(Collectors.toList());
-            gameSession.setUsers(updatedUsers);
+        if (gameSession != null && !gameSession.getAdmin().getUserName().equals(userNameToDelete)) {
 
-            DBConnection.deleteFromGame(DBConnection.getUserId(userNameToDelete), DBConnection.getGameSessionId(nameOfSession));
-            if (gameSession.getAllUsers().isEmpty()) deleteGameSession(gameSession.getAdmin().getUserName(),
-                    gameSession.getAdmin().getChatId(), gameSession.getNameOfGameSession());
+                List<User> allUsers = gameSession.getAllUsers();
+                List<User> updatedUsers = allUsers.stream()
+                        .filter(user -> !user.getUserName().equals(userNameToDelete))
+                        .collect(Collectors.toList());
+                gameSession.setUsers(updatedUsers);
+                DBConnection.deleteFromGame(DBConnection.getUserId(userNameToDelete), DBConnection.getGameSessionId(nameOfSession));
+                if (gameSession.getAllUsers().isEmpty()) deleteGameSession(gameSession.getAdmin().getUserName(),
+                        gameSession.getAdmin().getChatId(), gameSession.getNameOfGameSession());
+                return "Гравця " + userNameToDelete + " видалено";
+
+
         }
+        return "Ви, " + userNameToDelete + ", адмін гри, вас не можна видалити";
     }
 
     public static GameSession findGame(String nameOfSession) {

@@ -147,8 +147,7 @@ public class Bot extends TelegramLongPollingBot {
                 }
                 case DELETE_USER -> {
 
-                    GemaSessionRepository.deleteUser(text, tempNameOfGameSession);
-                    dialogService.sendMessage(chatId, text + " видалено");
+                    dialogService.sendMessage(chatId,GemaSessionRepository.deleteUser(text, tempNameOfGameSession));
                     tempNameOfGameSession = null;
                 }
                 case RUN_CAROUSEL -> {
