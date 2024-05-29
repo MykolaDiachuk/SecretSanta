@@ -1,1 +1,2 @@
-![image](https://github.com/MykolaDiachuk/SecretSanta/assets/115486047/606b8e70-1e89-40f4-b738-0890f5e81873)
+mvn install   
+java -jar ./target/untitled2-1.0-jar-with-dependencies.jar
